@@ -1,6 +1,6 @@
 const minimist = require('minimist');
 const refParser = require('json-schema-ref-parser');
-//const getUIReadySchema = require('./open-api/schemaParser');
+var Dict = require("collections/dict");
 
 let args = minimist(process.argv.slice(2), {  
     alias: {
@@ -27,54 +27,76 @@ fs.readFile(args.f, 'utf8', function (err,data) {
 });
 
 function buildNavigationAndServices (paths, servers, apiSecurity, securityDefinitions, exclusionFunc = null) {
-    const pathIds = Object.keys(paths)
-    const navigationMethods = []
-    const servicesMethods = []
-    const isFunc = typeof exclusionFunc === 'function'
-    for (var x=0;x<pathIds.length;x++)
-    {
-        for (let j = 0, pathIdLength = pathIds.length; j < pathIdLength; j++) {
-            const pathId = pathIds[j]
-            const path = paths[pathId]
-            const methodTypes = Object.keys(path)
-        
-            for (let k = 0, methodLength = methodTypes.length; k < methodLength; k++) {
-            const methodType = methodTypes[k]
-            const method = Object.assign({ type: methodType }, path[methodType])
-        
-            // Should this be included in the output?
-            if (isFunc && exclusionFunc(method)) {
-                continue
+  const pathIds = Object.keys(paths)
+  const navigationMethods = []
+  const servicesMethods = []
+  const isFunc = typeof exclusionFunc === 'function'
+  for (var x=0;x<pathIds.length;x++)
+  {
+      for (let j = 0, pathIdLength = pathIds.length; j < pathIdLength; j++) {
+          const pathId = pathIds[j]
+          const path = paths[pathId]
+          const methodTypes = Object.keys(path)
+      
+          for (let k = 0, methodLength = methodTypes.length; k < methodLength; k++) {
+          const methodType = methodTypes[k]
+          const method = Object.assign({ type: methodType }, path[methodType])
+      
+          // Should this be included in the output?
+          if (isFunc && exclusionFunc(method)) {
+              continue
+          }
+      
+          // Add the navigation item
+          navigationMethods.push(getNavigationMethod(pathId, method))
+      
+          // Construct the full method object
+          const servicesMethod = getServicesMethod({
+              path: pathId,
+              servers,
+              method,
+              request: getUIRequest(method.description, method.requestBody),
+              params: getUIParameters(method.parameters),
+              responses: getUIResponses(method.responses)
+          })
+      
+          // Security can be declared per method, or globally for the entire API.
+          //   if (method.security) {
+          //     servicesMethod.security = getUISecurity(method.security, securityDefinitions)
+          //   } else if (apiSecurity.length) {
+          //     servicesMethod.security = getUISecurity(apiSecurity, securityDefinitions)
+          //   }
+      
+          servicesMethods.push(servicesMethod)
+          }
+      }
+  }
+  var tests = produceTestOutput(paths,servers,servicesMethods);
+  return tests;
+} 
+//output object for people to use 
+function produceTestOutput(paths, server, servicesMethods) {
+  var test = [];
+  for (let x=0;x<servicesMethods.length;x++) {
+    //build test cases for parameters
+    if (servicesMethods[x].parameters) {
+      if (servicesMethods[x].parameters.path.length > 0) {
+        for (let y=0;y<servicesMethods[x].parameters.path.length;y++) {
+          var examples = servicesMethods[x].parameters.path[y].examples;
+          if (examples) {
+            var path = servicesMethods[x].path;
+            var type = servicesMethods[x].type;
+            var parms = [];
+            for (let z=0;z<examples.length;z++) {
+              var parm = { name:examples[z].test,  };
+              console.log("test name: " + examples[z].test + " value: " + examples[z].val);
             }
-        
-            // Add the navigation item
-            navigationMethods.push(getNavigationMethod(pathId, method))
-        
-            // Construct the full method object
-            const servicesMethod = getServicesMethod({
-                path: pathId,
-                servers,
-                method,
-                request: getUIRequest(method.description, method.requestBody),
-                params: getUIParameters(method.parameters),
-                responses: getUIResponses(method.responses)
-            })
-        
-            // Security can be declared per method, or globally for the entire API.
-            //   if (method.security) {
-            //     servicesMethod.security = getUISecurity(method.security, securityDefinitions)
-            //   } else if (apiSecurity.length) {
-            //     servicesMethod.security = getUISecurity(apiSecurity, securityDefinitions)
-            //   }
-        
-            servicesMethods.push(servicesMethod)
-            }
+          }
         }
+      }
     }
-    console.log(navigationMethods);
-    console.log(servicesMethods);
-}  
-
+  }  
+}
 function getNavigationMethod (path, method, tag) {
     return {
       type: method.type,

@@ -1,20 +1,20 @@
 {
-    "name": "openapi-auto-test",
-    "version": "0.0.1",
-    "description": "Automatically reads an OpenAPI 3.0 defintion and generates a Postman collection to be used with newman for automated API tests.",
-    "license": "MIT",
-    "scripts": {
-      "start": "node app --f openapi.json",
-      "create": "node postman"
-    },
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/dtzar/openapi-auto-test"
-    },
-    "dependencies": {
-      "minimist": "^1.2.0",
-      "json-schema-ref-parser": "^3.3.1",
-      "postman-collection": "^2.1.3"
-    }
+  "name": "openapi-auto-test",
+  "version": "0.0.1",
+  "description": "Automatically reads an OpenAPI 3.0 defintion and generates a Postman collection to be used with newman for automated API tests.",
+  "license": "MIT",
+  "scripts": {
+    "start": "node app --f openapi.json",
+    "create": "node postman"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dtzar/openapi-auto-test"
+  },
+  "dependencies": {
+    "collections": "^5.0.7",
+    "json-schema-ref-parser": "^3.3.1",
+    "minimist": "^1.2.0",
+    "postman-collection": "^2.1.3"
   }
-  
+}
