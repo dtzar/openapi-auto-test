@@ -8,7 +8,7 @@
             "program": "${file}", 
             "args": [ 
                 "--f",
-                "openapi.json"
+                "one-parm-test.json"
             ]
         }
     ]

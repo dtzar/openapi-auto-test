@@ -1,6 +1,7 @@
 const minimist = require('minimist');
 const refParser = require('json-schema-ref-parser');
 var Dict = require("collections/dict");
+var Array = require("collections/shim-array");
 
 let args = minimist(process.argv.slice(2), {  
     alias: {
@@ -27,56 +28,63 @@ fs.readFile(args.f, 'utf8', function (err,data) {
 });
 
 function buildNavigationAndServices (paths, servers, apiSecurity, securityDefinitions, exclusionFunc = null) {
-  const pathIds = Object.keys(paths)
-  const navigationMethods = []
-  const servicesMethods = []
-  const isFunc = typeof exclusionFunc === 'function'
-  for (var x=0;x<pathIds.length;x++)
-  {
-      for (let j = 0, pathIdLength = pathIds.length; j < pathIdLength; j++) {
-          const pathId = pathIds[j]
-          const path = paths[pathId]
-          const methodTypes = Object.keys(path)
-      
-          for (let k = 0, methodLength = methodTypes.length; k < methodLength; k++) {
-          const methodType = methodTypes[k]
-          const method = Object.assign({ type: methodType }, path[methodType])
-      
-          // Should this be included in the output?
-          if (isFunc && exclusionFunc(method)) {
-              continue
-          }
-      
-          // Add the navigation item
-          navigationMethods.push(getNavigationMethod(pathId, method))
-      
-          // Construct the full method object
-          const servicesMethod = getServicesMethod({
-              path: pathId,
-              servers,
-              method,
-              request: getUIRequest(method.description, method.requestBody),
-              params: getUIParameters(method.parameters),
-              responses: getUIResponses(method.responses)
-          })
-      
-          // Security can be declared per method, or globally for the entire API.
-          //   if (method.security) {
-          //     servicesMethod.security = getUISecurity(method.security, securityDefinitions)
-          //   } else if (apiSecurity.length) {
-          //     servicesMethod.security = getUISecurity(apiSecurity, securityDefinitions)
-          //   }
-      
-          servicesMethods.push(servicesMethod)
-          }
-      }
-  }
-  var tests = produceTestOutput(paths,servers,servicesMethods);
-  return tests;
+    const pathIds = Object.keys(paths)
+    const navigationMethods = []
+    const servicesMethods = []
+    const isFunc = typeof exclusionFunc === 'function'
+    for (var x=0;x<pathIds.length;x++)
+    {
+        for (let j = 0, pathIdLength = pathIds.length; j < pathIdLength; j++) {
+            const pathId = pathIds[j]
+            const path = paths[pathId]
+            const methodTypes = Object.keys(path)
+        
+            for (let k = 0, methodLength = methodTypes.length; k < methodLength; k++) {
+            const methodType = methodTypes[k]
+            const method = Object.assign({ type: methodType }, path[methodType])
+        
+            // Should this be included in the output?
+            if (isFunc && exclusionFunc(method)) {
+                continue
+            }
+        
+            // Add the navigation item
+            navigationMethods.push(getNavigationMethod(pathId, method))
+        
+            // Construct the full method object
+            const servicesMethod = getServicesMethod({
+                path: pathId,
+                servers,
+                method,
+                request: getUIRequest(method.description, method.requestBody),
+                params: getUIParameters(method.parameters),
+                responses: getUIResponses(method.responses)
+            })
+        
+            // Security can be declared per method, or globally for the entire API.
+            //   if (method.security) {
+            //     servicesMethod.security = getUISecurity(method.security, securityDefinitions)
+            //   } else if (apiSecurity.length) {
+            //     servicesMethod.security = getUISecurity(apiSecurity, securityDefinitions)
+            //   }
+        
+            servicesMethods.push(servicesMethod)
+            }
+        }
+    }
+    var tests = produceTestOutput(paths,servers,servicesMethods);
+    return tests;
 } 
 //output object for people to use 
-function produceTestOutput(paths, server, servicesMethods) {
-  var test = [];
+function produceTestOutput(paths, servers, servicesMethods) {
+  var arrServers = new Array();
+  var dict = new Dict();
+  //build dictionary for servers
+  for (let x=0;x<servers.length;x++)
+  {
+    arrServers.push(servers[x].url);
+  }
+
   for (let x=0;x<servicesMethods.length;x++) {
     //build test cases for parameters
     if (servicesMethods[x].parameters) {
@@ -88,14 +96,17 @@ function produceTestOutput(paths, server, servicesMethods) {
             var type = servicesMethods[x].type;
             var parms = [];
             for (let z=0;z<examples.length;z++) {
-              var parm = { name:examples[z].test,  };
-              console.log("test name: " + examples[z].test + " value: " + examples[z].val);
+              var parm = { name:servicesMethods[x].parameters.path[y].name, path:path, type:type, value:examples[z].val, testOrder:examples[z].testOrder  };
+              if (!dict.has(examples[z].test))
+                dict.add(parm,examples[z].test);
             }
           }
         }
       }
     }
-  }  
+  }
+  var rtnObj = { servers:arrServers, tests:dict };  
+  return rtnObj;
 }
 function getNavigationMethod (path, method, tag) {
     return {
@@ -221,7 +232,31 @@ function getServicesMethod ({path, servers, method, request, params, responses})
       }
       
       //need to peel example out of they have it
-     
+      let examples = []
+      
+      if (parameter.example) {
+        examples.push(parameter.example)
+      }
+      
+      if (parameter.examples) {
+        examples = [...examples, ...Object.keys(parameter.examples).map(
+          (example) => parameter.examples[example]
+        )]
+      }
+      
+      if (examples.length > 0) {
+        let ex = [];
+        for (let x=0;x<examples.length;x++) {
+          const keys = Object.keys(examples[x]);
+          for (let i=0;i<keys.length;i++) {
+            var order = examples[x][keys[i]]['x-test-order'];
+            var o = {test:keys[i], val:examples[x][keys[i]].value, testOrder:order};
+            ex.push(o);
+          }
+        }
+        uiParameter.examples = ex;
+      }
+
       return uiParameter
     })
   
