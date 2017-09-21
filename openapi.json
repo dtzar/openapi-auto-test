@@ -1,0 +1,297 @@
+{
+    "openapi": "3.0.0",
+    "servers": [
+      {
+        "url": "http://localhost:5000/"
+      }
+    ],
+    "info": {
+      "version": "v1",
+      "title": "Cars API"
+    },
+    "paths": {
+      "/api/Cars": {
+        "get": {
+          "tags": [
+            "Cars"
+          ],
+          "operationId": "ApiCarsGet",
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Car"
+                    }
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Car"
+                    }
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Car"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "tags": [
+            "Cars"
+          ],
+          "operationId": "ApiCarsPost",
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "format": "int32",
+                    "type": "integer"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "format": "int32",
+                    "type": "integer"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "format": "int32",
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          },
+          "requestBody": {
+            "$ref": "#/components/requestBodies/CarUpdate"
+          }
+        }
+      },
+      "/api/Cars/{id}": {
+        "get": {
+          "tags": [
+            "Cars"
+          ],
+          "operationId": "ApiCarsByIdGet",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int32"
+                },
+              "example" : {
+                "get-id-1": {
+                  "value" : 1
+                },
+                "get-id-5": {
+                  "value" : 5
+                },
+                "get-failure": {
+                  "value" : 99
+                }
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Car"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Car"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Car"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "put": {
+          "tags": [
+            "Cars"
+          ],
+          "operationId": "ApiCarsByIdPut",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "boolean"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "boolean"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          },
+          "requestBody": {
+            "$ref": "#/components/requestBodies/CarUpdate"
+          }
+        },
+        "delete": {
+          "tags": [
+            "Cars"
+          ],
+          "operationId": "ApiCarsByIdDelete",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "boolean"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "boolean"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Car": {
+          "required": [
+            "make",
+            "model",
+            "year",
+            "color"
+          ],
+          "type": "object",
+          "properties": {
+            "id": {
+              "format": "int32",
+              "type": "integer"
+            },
+            "make": {
+              "type": "string"
+            },
+            "model": {
+              "type": "string"
+            },
+            "year": {
+              "format": "int32",
+              "type": "integer"
+            },
+            "color": {
+              "type": "string"
+            }
+          }
+        },
+        "CarUpdate": {
+          "required": [
+            "make",
+            "model",
+            "year",
+            "color"
+          ],
+          "type": "object",
+          "properties": {
+            "make": {
+              "type": "string"
+            },
+            "model": {
+              "type": "string"
+            },
+            "year": {
+              "format": "int32",
+              "type": "integer"
+            },
+            "color": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "requestBodies": {
+        "CarUpdate": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CarUpdate"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CarUpdate"
+              }
+            },
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CarUpdate"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
