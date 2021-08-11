@@ -8,7 +8,7 @@
  * {
  *    key,    // The name of the schema node, so we can refer to it
  *    value,  // The actual schema node
- *    parent  // The parent wrapper node
+ *    parent  // The parent wrapper node 
  * }
  *
  * A circular reference occurs when a node references any of its ancestors. When this happens, the link is cut, and
@@ -18,7 +18,7 @@
  *
  * @param {Object} schema
  *
- * @return {Object} modified schema
+ * @return {Object} modified schema 
  */
 export function resolveCircularRef (schema) {
   const node = {

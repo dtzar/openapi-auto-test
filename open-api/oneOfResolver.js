@@ -1,7 +1,7 @@
 import { clone } from '../../lib/clone'
 import get from 'lodash/get'
 import update from 'lodash/update'
-import toPath from 'lodash/toPath'
+import toPath from 'lodash/toPath' 
 
 /**
  * Recursively determine if the given object has any `oneOf` properties.
@@ -11,7 +11,7 @@ import toPath from 'lodash/toPath'
  * @param {object} obj
  * @return {string[]}
  */
-function getOneOfPaths (obj) {
+function getOneOfPaths (obj) { 
   let paths = []
 
   let walk = function (obj, path = '') {
