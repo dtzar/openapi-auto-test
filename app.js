@@ -1,5 +1,5 @@
 const minimist = require('minimist');
-const refParser = require('json-schema-ref-parser');
+const refParser = require('json-schema-ref-parser'); 
 var Dict = require("collections/dict");
 var Array = require("collections/shim-array");
 
