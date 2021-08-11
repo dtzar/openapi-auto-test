@@ -12,14 +12,14 @@ const literalTypes = ['string', 'integer', 'number', 'boolean']
  *
  * @return {Object}
  */
-function getAdditionalPropertiesProperty (additionalProperties) {
+function getAdditionalPropertiesProperty (additionalProperties) { 
   const property = getUIProperty('additionalProperties', additionalProperties)
 
   // Also add some meta data to it, so the UI can handle this property differently if required
   property.attributes = {}
   property.attributes.isAdditionalProperties = true
 
-  return property
+  return property 
 }
 
 /**
@@ -208,5 +208,5 @@ export default function getUIReadySchema (jsonSchema) {
     )
   }
 
-  return doGetUIReadySchema(resolved)
+  return doGetUIReadySchema(resolved) 
 }
