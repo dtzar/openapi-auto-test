@@ -60,7 +60,7 @@ function resolveAllOfRecursive (obj) {
  * @return {Object} definitions object that has allOf resolved
  */
 export function resolveAllOf (obj) {
-  resolveAllOfRecursive(obj)
+  resolveAllOfRecursive(obj) 
 
   return obj
 }
