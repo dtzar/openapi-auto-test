@@ -14,7 +14,7 @@ export async function validateDefinition (definitionUrl) {
     const response = await result.json()
 
     if (response.status === false) {
-      throw new Error(`The definition did not validate, see ${VALIDATOR_HOST}.`)
+      throw new Error(`The definition did not validate, see ${VALIDATOR_HOST}.`) 
     }
   }
 
