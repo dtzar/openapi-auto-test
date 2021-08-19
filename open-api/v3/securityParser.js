@@ -4,7 +4,7 @@
  * The API defines what security applies at either the top level (`security`)
  * or per operation.
  *
- * @param {Object} definition
+ * @param {Object} definition 
  * @return {Object}
  */
 export function getSecurityDefinitions (definition) {
@@ -62,5 +62,5 @@ export function getUISecurity (security, definitions) {
     prev[name] = definition
 
     return prev
-  }, {})
+  } {})
 }
