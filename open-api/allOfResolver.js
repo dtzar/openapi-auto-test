@@ -53,14 +53,14 @@ function resolveAllOfRecursive (obj) {
 }
 
 /**
- * Resolve allOf for schema object
+ * Resolve allOf for schema object 
  *
  * @param {Object} obj
  *
  * @return {Object} definitions object that has allOf resolved
  */
 export function resolveAllOf (obj) {
-  resolveAllOfRecursive(obj) 
+  resolveAllOfRecursive(obj)  
 
   return obj
 }
