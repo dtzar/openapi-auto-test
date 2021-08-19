@@ -16,7 +16,7 @@
           "Cars"
         ],
         "operationId": "ApiCarsGet",
-        "responses": {
+        "responses": { 
           "200": {
             "description": "Success",
             "content": {
