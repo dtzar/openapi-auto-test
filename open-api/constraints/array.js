@@ -1,6 +1,6 @@
 /**
  * Returns an array of hints that relate to the constraints for an array,
- * `maxItems`, `minItems` and `uniqueItems`.
+ * `maxItems`, `minItems` and `uniqueItems`. 
  *
  * @param {object} constraints
  * @return {array}
