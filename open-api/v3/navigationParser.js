@@ -3,7 +3,7 @@
  * not the link to the actual path, but it's a unique identifier to help
  * with deeplinking from UI applications.
  *
- * @todo Look at supporting `operationId` which does this purpose.
+ * @todo Look at supporting `operationId` which does this purpose. 
  * @param {string} path
  * @param {string} methodType
  */
