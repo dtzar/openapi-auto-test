@@ -1,7 +1,7 @@
 import refParser from 'json-schema-ref-parser'
 import { getSecurityDefinitions, getUISecurity } from './securityParser'
 import { getNavigationMethod, getServicesMethod } from './navigationParser'
-import getUIReadySchema from '../schemaParser'
+import getUIReadySchema from '../schemaParser' 
 
 /**
  * Construct navigation and services ready to be consumed by the UI
